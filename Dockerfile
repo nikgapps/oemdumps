@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y \
     cpio \
     rename \
     liblz4-dev \
+    wget \
     curl \
     python3-venv \
  && rm -rf /var/lib/apt/lists/*
