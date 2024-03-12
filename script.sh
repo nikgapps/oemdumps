@@ -30,7 +30,6 @@ else
     [[ -e "$URL" ]] || { echo "Invalid Input" && exit 1; }
 fi
 
-ORG=AndroidDumps #your GitHub org name
 FILE=$(echo ${URL##*/} | inline-detox)
 EXTENSION=$(echo ${URL##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
@@ -42,22 +41,21 @@ PARTITIONS="system product system_ext"
 
 cd "${UNZIP_DIR}" || exit
 for p in $PARTITIONS; do
-    # Try to extract images via fsck.erofs
-    if [ -f $p.img ] && [ $p != "modem" ]; then
-        echo "Trying to extract $p partition via fsck.erofs."
-        /Firmware_extractor/tools/Linux/bin/fsck.erofs --extract="$p" "$p".img
-        # Deletes images if they were correctly extracted via fsck.erofs
-        if [ -d "$p" ]; then
+    if [[ -e "$p.img" ]]; then
+        mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
+        echo "Trying to extract $p partition via 7z."
+        7z x "$p".img -y -o"$p"/ > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
             rm "$p".img > /dev/null 2>&1
-        else
-        # Uses 7z if images could not be extracted via fsck.erofs
-            if [[ -e "$p.img" ]]; then
-                mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
-                echo "Extraction via fsck.erofs failed, extracting $p partition via 7z"
-                7z x "$p".img -y -o"$p"/ > /dev/null 2>&1
-                if [ $? -eq 0 ]; then
+        else                
+            echo "Extraction via 7z failed, extracting $p partition via fsck.erofs"
+            # Try to extract images via fsck.erofs
+            if [ -f $p.img ] && [ $p != "modem" ]; then
+                /Firmware_extractor/tools/Linux/bin/fsck.erofs --extract="$p" "$p".img
+                # Deletes images if they were correctly extracted via fsck.erofs
+                if [ -d "$p" ]; then
                     rm "$p".img > /dev/null 2>&1
-                else                
+                else
                     echo "Couldn't extract $p partition. It might use an unsupported filesystem."
                     echo "For EROFS: make sure you're using Linux 5.4+ kernel."
                     echo "For F2FS: make sure you're using Linux 5.15+ kernel."
@@ -66,5 +64,5 @@ for p in $PARTITIONS; do
         fi
     fi
 done
-
+cd ..
 ls -R
