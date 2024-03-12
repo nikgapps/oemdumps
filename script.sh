@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-echo "Hello, World!"
-
-
 # Determine which command to use for privilege escalation
 if command -v sudo > /dev/null 2>&1; then
     sudo_cmd="sudo"
@@ -13,13 +10,15 @@ else
     # exit 1
 fi
 
+echo "Download link: $link"
+
 # download or copy from local?
 if echo "$link" | grep -e '^\(https\?\|ftp\)://.*$' > /dev/null; then
     # 1DRV URL DIRECT LINK IMPLEMENTATION
-    if echo "$1" | grep -e '1drv.ms' > /dev/null; then
-        URL=`curl -I "$1" -s | grep location | sed -e "s/redir/download/g" | sed -e "s/location: //g"`
+    if echo "$link" | grep -e '1drv.ms' > /dev/null; then
+        URL=`curl -I "$link" -s | grep location | sed -e "s/redir/download/g" | sed -e "s/location: //g"`
     else
-        URL=$1
+        URL=$link
     fi
     { type -p aria2c > /dev/null 2>&1 && printf "Downloading File...\n" && aria2c -x16 -j"$(nproc)" "${URL}"; } || { printf "Downloading File...\n" && wget -q --content-disposition --show-progress --progress=bar:force "${URL}" || exit 1; }
     if [[ ! -f "$(echo ${URL##*/} | inline-detox)" ]]; then
@@ -27,7 +26,7 @@ if echo "$link" | grep -e '^\(https\?\|ftp\)://.*$' > /dev/null; then
     fi
     detox "${URL##*/}"
 else
-    URL=$(printf "%s\n" "$1")
+    URL=$(printf "%s\n" "$link")
     [[ -e "$URL" ]] || { echo "Invalid Input" && exit 1; }
 fi
 
