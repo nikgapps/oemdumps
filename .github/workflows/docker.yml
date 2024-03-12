@@ -16,7 +16,7 @@ env:
         
 jobs:
   Update-Version:
-    name: upload release to PyPI
+    name: Update Version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

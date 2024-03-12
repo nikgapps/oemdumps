@@ -3,7 +3,7 @@ version = os.getenv('VERSION')
 print(f"Version is {version}")
 version_line_index = 5
 
-with open('setup.py', 'r') as file:
+with open('version', 'r') as file:
     lines = file.readlines()
 
 for i, line in enumerate(lines):
