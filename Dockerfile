@@ -57,7 +57,7 @@ ENV PATH="/usr/src/workdir/venv/bin:$PATH"
 RUN pip install --upgrade pip
 
 # Copy the script into the container
-COPY script.sh /usr/src/workdir/extract_ota_update.sh
+COPY extract_ota_update.sh /usr/src/workdir/extract_ota_update.sh
 RUN chmod +x /usr/src/workdir/extract_ota_update.sh
 
 # Set the entrypoint
