@@ -4,7 +4,11 @@ FROM ubuntu:20.04
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update and install dependencies
+# Add the deadsnakes PPA to get Python 3.12
+RUN apt-get update && apt-get install -y software-properties-common \
+ && add-apt-repository ppa:deadsnakes/ppa
+
+# Install dependencies including Python 3.12 and pip
 RUN apt-get update && apt-get install -y \
     git \
     unace \
@@ -21,6 +25,9 @@ RUN apt-get update && apt-get install -y \
     cabextract \
     device-tree-compiler \
     liblzma-dev \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
     python3-pip \
     brotli \
     liblz4-tool \
@@ -33,8 +40,11 @@ RUN apt-get update && apt-get install -y \
     liblz4-dev \
     wget \
     curl \
-    python3-venv \
  && rm -rf /var/lib/apt/lists/*
+
+# Ensure pip3 is linked to Python 3.12
+RUN ln -s /usr/bin/python3.12 /usr/bin/python3 \
+ && ln -s /usr/bin/pip3 /usr/bin/pip
 
 # Clone necessary repositories with submodules
 RUN git clone --recurse-submodules https://github.com/AndroidDumps/Firmware_extractor.git /Firmware_extractor \
@@ -46,7 +56,6 @@ RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 RUN pip install --upgrade pip \
  && pip install aospdtgen backports.lzma extract-dtb protobuf pycryptodome docopt zstandard
-
 
 # Set work directory
 WORKDIR /usr/src/workdir
