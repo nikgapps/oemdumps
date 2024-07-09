@@ -1,3 +1,5 @@
+import os
+
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -83,3 +85,22 @@ class OTAUpdater:
             raise Exception(f"No valid regular OTA URLs found for device {device_name}.")
 
         return latest_regular_url
+
+    def download_file(self, url, local_filename=None):
+        if local_filename is None:
+            local_filename = url.split('/')[-1]
+
+        # Get the directory of the current file and its parent directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+
+        # Construct the full path to save the file in the parent directory
+        full_path = os.path.join(parent_dir, local_filename)
+
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            with open(full_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        print(f"File downloaded to {full_path}")
+        return full_path

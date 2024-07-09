@@ -36,16 +36,13 @@ cd oemdumps
 
 pip3 install -r requirements.txt
 
-URL=$(python3.12 main.py)
+URL=$(python3 main.py)
 echo "Download link: $URL"
 
 if [ -z "$URL" ]; then
     echo "No URL found"
     exit 1
 fi
-
-URL2=$(python3 main.py)
-echo "Download link2: $URL2"
 
 FILE=$(echo ${URL##*/} | inline-detox)
 EXTENSION=$(echo ${URL##*.} | inline-detox)
