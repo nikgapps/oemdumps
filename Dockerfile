@@ -42,10 +42,6 @@ RUN apt-get update && apt-get install -y \
     curl \
  && rm -rf /var/lib/apt/lists/*
 
-# Ensure pip3 is linked to Python 3.12
-RUN ln -s /usr/bin/python3.12 /usr/bin/python3 \
- && ln -s /usr/bin/pip3 /usr/bin/pip
-
 # Clone necessary repositories with submodules
 RUN git clone --recurse-submodules https://github.com/AndroidDumps/Firmware_extractor.git /Firmware_extractor \
  && git clone --recurse-submodules https://github.com/carlitros900/mkbootimg_tools.git /mkbootimg_tools \
