@@ -6,10 +6,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Add the deadsnakes PPA to get Python 3.12
 RUN apt-get update && apt-get install -y software-properties-common \
- && add-apt-repository ppa:deadsnakes/ppa
+ && add-apt-repository ppa:deadsnakes/ppa \
+ && apt-get update
 
 # Install dependencies including Python 3.12 and pip
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
     git \
     unace \
     unrar \
@@ -47,19 +48,14 @@ RUN git clone --recurse-submodules https://github.com/AndroidDumps/Firmware_extr
  && git clone --recurse-submodules https://github.com/carlitros900/mkbootimg_tools.git /mkbootimg_tools \
  && git clone --recurse-submodules https://github.com/marin-m/vmlinux-to-elf.git /vmlinux-to-elf
 
-# Set up the virtual environment and install Python dependencies
-RUN python3 -m venv /venv
-ENV PATH="/venv/bin:$PATH"
-RUN pip install --upgrade pip \
- && pip install aospdtgen backports.lzma extract-dtb protobuf pycryptodome docopt zstandard
-
 # Set work directory
 WORKDIR /usr/src/workdir
 
 # Create a virtual environment and install Python packages
-RUN python3 -m venv venv
+RUN python3.12 -m venv venv
 ENV PATH="/usr/src/workdir/venv/bin:$PATH"
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip \
+ && pip install aospdtgen backports.lzma extract-dtb protobuf pycryptodome docopt zstandard
 
 # Copy the script into the container
 COPY extract_ota_update.sh /usr/src/workdir/extract_ota_update.sh

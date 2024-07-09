@@ -36,7 +36,7 @@ cd oemdumps
 
 pip3 install -r requirements.txt
 
-URL=$(python3 main.py)
+URL=$(python3.12 main.py)
 
 if [ -z "$URL" ]; then
     echo "No URL found"
