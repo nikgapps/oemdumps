@@ -51,9 +51,14 @@ RUN pip install --upgrade pip \
 # Set work directory
 WORKDIR /usr/src/workdir
 
+# Create a virtual environment and install Python packages
+RUN python3 -m venv venv
+ENV PATH="/usr/src/workdir/venv/bin:$PATH"
+RUN pip install --upgrade pip
+
 # Copy the script into the container
-COPY script.sh /usr/src/workdir/script.sh
-RUN chmod +x /usr/src/workdir/script.sh
+COPY script.sh /usr/src/workdir/extract_ota_update.sh
+RUN chmod +x /usr/src/workdir/extract_ota_update.sh
 
 # Set the entrypoint
-ENTRYPOINT ["bash", "/usr/src/workdir/script.sh"]
+ENTRYPOINT ["bash", "/usr/src/workdir/extract_ota_update.sh"]
