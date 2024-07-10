@@ -49,8 +49,10 @@ EXTENSION=$(echo ${URL##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
 
 cd /payload_dumper || exit
+echo "Finding list of files before extraction"
 ls -R
 python3 payload_dumper.py "payload.bin"
+echo "Finding list of files after extraction"
 ls -R
 #bash "/Firmware_extractor/extractor.sh" "${FILE}" "${UNZIP_DIR}"
 #
