@@ -58,6 +58,13 @@ ENV PATH="/usr/src/workdir/venv/bin:$PATH"
 RUN pip install --upgrade pip \
  && pip install aospdtgen backports.lzma extract-dtb protobuf pycryptodome docopt zstandard
 
+# Install payload_dumper dependencies
+WORKDIR /payload_dumper
+RUN /usr/src/workdir/venv/bin/pip install -r requirements.txt
+
+# Set work directory back to /usr/src/workdir
+WORKDIR /usr/src/workdir
+
 # Copy the script into the container
 COPY extract_ota_update.sh /usr/src/workdir/extract_ota_update.sh
 RUN chmod +x /usr/src/workdir/extract_ota_update.sh
