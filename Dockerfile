@@ -47,6 +47,7 @@ RUN apt-get install -y \
 RUN git clone --recurse-submodules https://github.com/AndroidDumps/Firmware_extractor.git /Firmware_extractor \
  && git clone --recurse-submodules https://github.com/carlitros900/mkbootimg_tools.git /mkbootimg_tools \
  && git clone --recurse-submodules https://github.com/marin-m/vmlinux-to-elf.git /vmlinux-to-elf
+ && git clone https://github.com/vm03/payload_dumper.git /payload_dumper
 
 # Set work directory
 WORKDIR /usr/src/workdir

@@ -96,11 +96,13 @@ class OTAUpdater:
 
         # Construct the full path to save the file in the parent directory
         full_path = os.path.join(parent_dir, local_filename)
-
-        with requests.get(url, stream=True) as r:
-            r.raise_for_status()
-            with open(full_path, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
+        if os.path.exists(full_path):
+            print(f"{full_path} already exists")
+        else:
+            with requests.get(url, stream=True) as r:
+                r.raise_for_status()
+                with open(full_path, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
         print(f"File downloaded to {full_path}")
         return full_path
