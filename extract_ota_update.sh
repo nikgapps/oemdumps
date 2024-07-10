@@ -48,26 +48,22 @@ FILE=$(echo ${URL##*/} | inline-detox)
 EXTENSION=$(echo ${URL##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
 
-cd /payload_dumper || exit
-echo "Finding list of files before extraction"
-ls -R
-python3 payload_dumper.py "payload.bin"
-echo "Finding list of files after extraction"
-ls -R
+python3 payload_dumper.py "extracted/payload.bin"
+cd output
 #bash "/Firmware_extractor/extractor.sh" "${FILE}" "${UNZIP_DIR}"
 #
-#PARTITIONS="system product system_ext"
+PARTITIONS="system product system_ext"
 #
 #cd "${UNZIP_DIR}" || exit
-#for p in $PARTITIONS; do
-#    if [[ -e "$p.img" ]]; then
-#        mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
-#        echo "Trying to extract $p partition via 7z."
-#        7z x "$p".img -y -o"$p"/ > /dev/null 2>&1
-#        if [ $? -eq 0 ]; then
-#            rm "$p".img > /dev/null 2>&1
-#        fi
-#    fi
-#done
-cd ..
+for p in $PARTITIONS; do
+    if [[ -e "$p.img" ]]; then
+        mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
+        echo "Trying to extract $p partition via 7z."
+        7z x "$p".img -y -o"$p"/ > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            rm "$p".img > /dev/null 2>&1
+        fi
+    fi
+done
+cd ../..
 ls -R

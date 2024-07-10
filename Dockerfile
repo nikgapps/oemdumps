@@ -56,7 +56,7 @@ WORKDIR /usr/src/workdir
 RUN python3.12 -m venv venv
 ENV PATH="/usr/src/workdir/venv/bin:$PATH"
 RUN pip install --upgrade pip \
- && pip install aospdtgen backports.lzma extract-dtb protobuf pycryptodome docopt zstandard
+ && pip install aospdtgen backports.lzma extract-dtb protobuf==3.20.1 pycryptodome docopt zstandard
 
 # Install payload_dumper dependencies
 WORKDIR /payload_dumper

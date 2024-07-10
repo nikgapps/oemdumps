@@ -7,10 +7,7 @@ import argparse
 import bsdiff4
 import io
 import os
-try:
-    import lzma
-except ImportError:
-    from backports import lzma
+import lzma
 
 import update_metadata_pb2 as um
 
@@ -154,6 +151,8 @@ block_size = dam.block_size
 
 if args.images == "":
     for part in dam.partitions:
+        if part.partition_name not in ["system", "system_ext", "product"]:
+            continue
         dump_part(part)
 else:
     images = args.images.split(",")
