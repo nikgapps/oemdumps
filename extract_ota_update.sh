@@ -49,12 +49,9 @@ EXTENSION=$(echo ${URL##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
 
 python3 payload_dumper.py "extracted/payload.bin"
+
 cd output
-#bash "/Firmware_extractor/extractor.sh" "${FILE}" "${UNZIP_DIR}"
-#
 PARTITIONS="system product system_ext"
-#
-#cd "${UNZIP_DIR}" || exit
 for p in $PARTITIONS; do
     if [[ -e "$p.img" ]]; then
         mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
@@ -65,5 +62,10 @@ for p in $PARTITIONS; do
         fi
     fi
 done
-cd ../..
+cd ..
+
+python3 push_oem_files_on_server.py
+
+cd ..
+echo "Extracted files:"
 ls -R
