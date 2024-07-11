@@ -11,7 +11,8 @@ gitlab_manager = GitLabManager(private_token='glpat-2yU9tSz99acWf_xPGbNq')
 project = gitlab_manager.get_project(repo_name)
 if project:
     gitlab_manager.reset_repository(project.path)
-
+else:
+    project = gitlab_manager.create_repository(repo_name)
 repo = GitOperations.setup_repo(repo_dir=repo_name, repo_url=project.ssh_url_to_repo)
 
 for partition in partitions:
