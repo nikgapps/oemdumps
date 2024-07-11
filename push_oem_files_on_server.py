@@ -1,8 +1,13 @@
 import os
+
+from NikGapps.helper.FileOp import FileOp
 from NikGapps.helper.git.GitOperations import GitOperations
 from NikGapps.helper.git.GitlabManager import GitLabManager
 
 partitions = ["system", "product", "system_ext"]
+exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
+include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
+must_include_files = [".prop", ".apk"]
 output_folder = "output"
 android_version = "14"
 oem = "husky"
@@ -23,12 +28,17 @@ for partition in partitions:
     repo_dir = f"{repo.working_tree_dir}/{partition}"
     for root, _, files in os.walk(source_dir):
         for file in files:
+            skip_further_check = False
             file_path = os.path.join(root, file)
-            if partition == "system":
-                if f"system{os.sep}system" not in file_path:
+            if any(file.endswith(extension) for extension in must_include_files):
+                skip_further_check = True
+            if not skip_further_check:
+                if not any(folder in file_path for folder in exclude_folders):
                     continue
-            if f"app{os.sep}" not in file_path:
-                continue
+                if not any(f"{folder}{os.sep}" in file_path for folder in include_folders):
+                    continue
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(repo_dir, relative_path)
             print(f"Copying {file_path} to {destination_path}")
+            FileOp.copy_file(file_path, destination_path)
+repo.git_push("Pushing OEM files")
