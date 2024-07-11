@@ -24,6 +24,11 @@ for partition in partitions:
     for root, _, files in os.walk(source_dir):
         for file in files:
             file_path = os.path.join(root, file)
+            if partition == "system":
+                if f"system{os.sep}system" not in file_path:
+                    continue
+            if f"app{os.sep}" not in file_path:
+                continue
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(repo_dir, relative_path)
             print(f"Copying {file_path} to {destination_path}")

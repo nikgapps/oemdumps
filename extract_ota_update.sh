@@ -62,10 +62,10 @@ for p in $PARTITIONS; do
         fi
     fi
 done
+echo "Check the extracted files"
+ls -R
 cd ..
 
 python3 push_oem_files_on_server.py
 
 cd ..
-echo "Extracted files:"
-ls -R
