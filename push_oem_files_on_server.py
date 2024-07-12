@@ -56,9 +56,9 @@ for partition in partitions:
                     continue
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(destination_dir, relative_path)
-            file_size = os.path.getsize(destination_path) / (1024 * 1024)
-            P.green(f"Copying {file_path} to {destination_path}, Size: {file_size:.2f} MB")
             FileOp.copy_file(file_path, destination_path)
+            file_size = os.path.getsize(destination_path) / (1024 * 1024)
+            P.green(f"Copied {file_path} to {destination_path}, Size: {file_size:.2f} MB")
             if repo.due_changes():
                 repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
             else:
