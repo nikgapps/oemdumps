@@ -72,10 +72,13 @@ for partition in partitions:
                 skip_further_check = True
             if not skip_further_check:
                 if any(folder in file_path for folder in exclude_folders):
+                    P.yellow(f"Skipping {file_path} as it is in exclude folder")
                     continue
                 if any(file.endswith(extension) for extension in must_exclude_files):
+                    P.blue(f"Skipping {file_path} as it is in must exclude files")
                     continue
                 if not any(f"{folder}{os.sep}" in file_path for folder in include_folders):
+                    P.magenta(f"Skipping {file_path} as it is not in include folders")
                     continue
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(destination_dir, relative_path)
