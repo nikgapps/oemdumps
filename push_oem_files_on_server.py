@@ -4,7 +4,11 @@ from NikGapps.helper.FileOp import FileOp
 from NikGapps.helper.P import P
 from NikGapps.helper.git.GitOperations import GitOperations
 from NikGapps.helper.git.GitlabManager import GitLabManager
+from dotenv import load_dotenv
 
+
+load_dotenv()
+gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
 print(f"Working directory: {working_dir}")
 partitions = ["system", "product", "system_ext"]
@@ -16,10 +20,12 @@ android_version = "14"
 oem = "husky"
 repo_name = f"{android_version}_{oem}"
 repo_dir = working_dir + os.sep + output_folder + os.sep + repo_name
-gitlab_manager = GitLabManager(private_token='glpat-2yU9tSz99acWf_xPGbNq')
+gitlab_manager = GitLabManager(private_token=gitlab_token)
 project = gitlab_manager.get_project(repo_name)
 if project:
-    gitlab_manager.reset_repository(project.path)
+    message = """*.apk filter=lfs diff=lfs merge=lfs -text
+                *.so filter=lfs diff=lfs merge=lfs -text"""
+    gitlab_manager.reset_repository(project.path, gitattributes=message)
 else:
     project = gitlab_manager.create_repository(repo_name)
 repo = GitOperations.setup_repo(repo_dir=repo_dir,

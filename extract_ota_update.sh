@@ -30,6 +30,11 @@ chmod 600 ~/.ssh/known_hosts
 
 echo "SSH setup complete."
 
+echo "Setting up Git"
+
+git config --global user.email "$USER_EMAIL"
+git config --global user.name "$USER_NAME"
+
 git clone git@github.com:nikgapps/oemdumps.git
 
 cd oemdumps
@@ -47,6 +52,8 @@ fi
 FILE=$(echo ${URL##*/} | inline-detox)
 EXTENSION=$(echo ${URL##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
+
+echo "GITLAB_TOKEN=$GITLAB_TOKEN" >> .env
 
 python3 payload_dumper.py "extracted/payload.bin"
 
