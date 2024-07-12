@@ -45,14 +45,10 @@ for partition in partitions:
                     continue
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(destination_dir, relative_path)
-            print(f"Copying {file_path} to {destination_path}")
+            P.green(f"Copying {file_path} to {destination_path}")
             FileOp.copy_file(file_path, destination_path)
 
-for root, _, files in os.walk(repo.working_tree_dir):
-    for file in files:
-        file_path = os.path.join(root, file)
-        P.green(f"Adding {file_path}")
 if repo.due_changes():
-    repo.git_push("Pushing OEM files")
+    repo.git_push("Pushing OEM files", push_untracked_files=True)
 else:
     print("No changes to push")
