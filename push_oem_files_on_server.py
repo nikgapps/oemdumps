@@ -1,4 +1,5 @@
 import os
+import re
 
 from NikGapps.helper.FileOp import FileOp
 from NikGapps.helper.P import P
@@ -10,6 +11,12 @@ from OemDumpsArgs import OemDumpsArgs
 
 args = OemDumpsArgs()
 file_name = str(args.fileName).replace(".zip", "")
+pattern = r'([a-zA-Z]+)-ota-\w+\.(\d{6})'
+match = re.search(pattern, file_name)
+if match:
+    device_name = match.group(1)
+    date = match.group(2)
+    file_name = f"{device_name}_{date}"
 load_dotenv()
 gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
