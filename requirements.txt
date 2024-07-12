@@ -1,6 +1,6 @@
 requests~=2.32.3
 beautifulsoup4~=4.12.3
-NikGapps~=2.82
+NikGapps~=2.83
 py7zr~=0.21.1
 protobuf>=3.19.3, <=3.20.1
 six>=1.16.0
