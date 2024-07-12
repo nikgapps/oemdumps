@@ -11,11 +11,9 @@ load_dotenv()
 gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
 print(f"Working directory: {working_dir}")
-# partitions = ["system", "system_ext"]
-partitions = ["product"]
+partitions = ["system", "product", "system_ext"]
 exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
-include_folders = ["app", "priv-app"]
-# include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
+include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
 must_include_files = [".apk"]
 must_exclude_files = [".prop", ".vdex", ".odex"]
 output_folder = "output"
@@ -57,10 +55,11 @@ for partition in partitions:
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(destination_dir, relative_path)
             file_size = os.path.getsize(file_path) / (1024 * 1024)
-            if file_size > 100:
-                FileOp.copy_file(file_path, destination_path)
-                P.green(f"Copied {file_path} to {destination_path}, Size: {file_size:.2f} MB")
-                if repo.due_changes():
-                    repo.git_push(f"Pushing {file}", push_untracked_files=True, debug=True, pull_first=True)
-                else:
-                    print("No changes to push")
+            FileOp.copy_file(file_path, destination_path)
+            P.green(f"Copied {file_path} "
+                    f"\n  to {destination_path}"
+                    f"\nSize: {file_size:.2f} MB")
+    if repo.due_changes():
+        repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
+    else:
+        print("No changes to push")
