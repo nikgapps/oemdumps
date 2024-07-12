@@ -6,7 +6,10 @@ from NikGapps.helper.git.GitOperations import GitOperations
 from NikGapps.helper.git.GitlabManager import GitLabManager
 from dotenv import load_dotenv
 
+from OemDumpsArgs import OemDumpsArgs
 
+args = OemDumpsArgs()
+file_name = str(args.fileName).replace(".zip", "")
 load_dotenv()
 gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
@@ -19,16 +22,18 @@ must_exclude_files = [".prop", ".vdex", ".odex"]
 output_folder = "output"
 android_version = "14"
 oem = "husky"
-repo_name = f"{android_version}_{oem}"
+repo_name = f"{android_version}_{file_name if not file_name == "" else oem}"
 repo_dir = working_dir + os.sep + output_folder + os.sep + repo_name
 gitlab_manager = GitLabManager(private_token=gitlab_token)
 project = gitlab_manager.get_project(repo_name)
-if project:
-    message = """*.apk filter=lfs diff=lfs merge=lfs -text
-*.so filter=lfs diff=lfs merge=lfs -text"""
-    gitlab_manager.reset_repository(project.path, gitattributes=message)
-else:
+if not project:
     project = gitlab_manager.create_repository(repo_name)
+else:
+    print(f"Project already exists: {project.name}")
+    # message = """*.apk filter=lfs diff=lfs merge=lfs -text
+    # *.so filter=lfs diff=lfs merge=lfs -text"""
+    # gitlab_manager.reset_repository(project.path, gitattributes=message)
+
 repo = GitOperations.setup_repo(repo_dir=repo_dir,
                                 repo_url=project.ssh_url_to_repo)
 for partition in partitions:
