@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y software-properties-common \
 # Install dependencies including Python 3.12 and pip
 RUN apt-get install -y \
     git \
+    git-lfs \
     unace \
     unrar \
     zip \
