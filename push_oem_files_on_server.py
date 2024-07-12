@@ -4,6 +4,8 @@ from NikGapps.helper.FileOp import FileOp
 from NikGapps.helper.git.GitOperations import GitOperations
 from NikGapps.helper.git.GitlabManager import GitLabManager
 
+working_dir = os.getcwd()
+print(f"Working directory: {working_dir}")
 partitions = ["system", "product", "system_ext"]
 exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
 include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
@@ -18,10 +20,11 @@ if project:
     gitlab_manager.reset_repository(project.path)
 else:
     project = gitlab_manager.create_repository(repo_name)
-repo = GitOperations.setup_repo(repo_dir=repo_name, repo_url=project.ssh_url_to_repo)
+repo = GitOperations.setup_repo(repo_dir=working_dir + os.sep + output_folder + os.sep + repo_name,
+                                repo_url=project.ssh_url_to_repo)
 
 for partition in partitions:
-    source_dir = f"{output_folder}{os.sep}{partition}"
+    source_dir = f"{working_dir}{os.sep}{output_folder}{os.sep}{partition}"
     if not os.path.exists(source_dir):
         print(f"{source_dir} does not exist")
         continue
@@ -41,4 +44,7 @@ for partition in partitions:
             destination_path = os.path.join(repo_dir, relative_path)
             print(f"Copying {file_path} to {destination_path}")
             FileOp.copy_file(file_path, destination_path)
-repo.git_push("Pushing OEM files")
+if repo.due_changes():
+    repo.git_push("Pushing OEM files")
+else:
+    print("No changes to push")
