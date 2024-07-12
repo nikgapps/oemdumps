@@ -12,11 +12,12 @@ gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
 print(f"Working directory: {working_dir}")
 # partitions = ["system", "system_ext"]
-partitions = ["product", "system_ext"]
+partitions = ["system_ext", "product"]
 exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
-include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
-must_include_files = [".prop", ".apk"]
-must_exclude_files = [".vdex", ".odex"]
+include_folders = ["app", "priv-app"]
+# include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
+must_include_files = [".apk"]
+must_exclude_files = [".prop", ".vdex", ".odex"]
 output_folder = "output"
 android_version = "14"
 oem = "husky"
@@ -49,9 +50,9 @@ for partition in partitions:
             if not skip_further_check:
                 if any(folder in file_path for folder in exclude_folders):
                     continue
-                if not any(f"{folder}{os.sep}" in file_path for folder in include_folders):
-                    continue
                 if any(file.endswith(extension) for extension in must_exclude_files):
+                    continue
+                if not any(f"{folder}{os.sep}" in file_path for folder in include_folders):
                     continue
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(destination_dir, relative_path)
