@@ -24,7 +24,7 @@ gitlab_manager = GitLabManager(private_token=gitlab_token)
 project = gitlab_manager.get_project(repo_name)
 if project:
     message = """*.apk filter=lfs diff=lfs merge=lfs -text
-                *.so filter=lfs diff=lfs merge=lfs -text"""
+*.so filter=lfs diff=lfs merge=lfs -text"""
     gitlab_manager.reset_repository(project.path, gitattributes=message)
 else:
     project = gitlab_manager.create_repository(repo_name)
