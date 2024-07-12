@@ -55,8 +55,15 @@ for partition in partitions:
     if not os.path.exists(source_dir):
         print(f"{source_dir} does not exist")
         continue
-    destination_dir = f"{repo.working_tree_dir}/{partition}"
+
+    # Special case for "system/system"
+    if partition == "system/system":
+        destination_dir = f"{repo.working_tree_dir}/system"
+    else:
+        destination_dir = f"{repo.working_tree_dir}/{partition}"
+
     print(f"Destination: {destination_dir}")
+
     for root, _, files in os.walk(source_dir):
         for file in files:
             skip_further_check = False
@@ -77,7 +84,9 @@ for partition in partitions:
             P.green(f"Copied {file_path} "
                     f"\n  to {destination_path}"
                     f"\nSize: {file_size:.2f} MB")
+
     if repo.due_changes():
         repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
     else:
         print("No changes to push")
+
