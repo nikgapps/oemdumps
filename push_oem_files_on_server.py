@@ -37,7 +37,7 @@ project = gitlab_manager.get_project(repo_name)
 if not project:
     gitattributes = """*.apk filter=lfs diff=lfs merge=lfs -text
 *.so filter=lfs diff=lfs merge=lfs -text"""
-    project = gitlab_manager.create_repository(repo_name)
+    project = gitlab_manager.create_repository(repo_name, provide_owner_access=True)
     commit = gitlab_manager.create_and_commit_file(project_id=project.id, file_path=".gitattributes",
                                                    content=gitattributes)
     time.sleep(10)
