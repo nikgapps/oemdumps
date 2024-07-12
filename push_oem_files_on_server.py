@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 from NikGapps.helper.FileOp import FileOp
 from NikGapps.helper.P import P
@@ -34,7 +35,12 @@ repo_dir = working_dir + os.sep + output_folder + os.sep + repo_name
 gitlab_manager = GitLabManager(private_token=gitlab_token)
 project = gitlab_manager.get_project(repo_name)
 if not project:
+    gitattributes = """*.apk filter=lfs diff=lfs merge=lfs -text
+*.so filter=lfs diff=lfs merge=lfs -text"""
     project = gitlab_manager.create_repository(repo_name)
+    commit = gitlab_manager.create_and_commit_file(project_id=project.id, file_path=".gitattributes",
+                                                   content=gitattributes)
+    time.sleep(10)
 else:
     print(f"Project already exists: {project.name}")
     # message = """*.apk filter=lfs diff=lfs merge=lfs -text
