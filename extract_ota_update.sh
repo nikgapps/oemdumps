@@ -34,6 +34,7 @@ echo "Setting up Git"
 
 git config --global user.email "$USER_EMAIL"
 git config --global user.name "$USER_NAME"
+git config --global http.postBuffer 1048576000
 
 git clone git@github.com:nikgapps/oemdumps.git
 

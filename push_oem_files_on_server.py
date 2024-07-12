@@ -11,7 +11,8 @@ load_dotenv()
 gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
 print(f"Working directory: {working_dir}")
-partitions = ["system", "product", "system_ext"]
+partitions = ["system_ext"]
+# partitions = ["system", "product", "system_ext"]
 exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
 include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
 must_include_files = [".prop", ".apk"]
@@ -55,6 +56,6 @@ for partition in partitions:
             FileOp.copy_file(file_path, destination_path)
 
 if repo.due_changes():
-    repo.git_push("Pushing OEM files", push_untracked_files=True)
+    repo.git_push("Pushing OEM files", push_untracked_files=True, debug=True, pull_first=True)
 else:
     print("No changes to push")
