@@ -12,7 +12,7 @@ gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
 print(f"Working directory: {working_dir}")
 # partitions = ["system", "system_ext"]
-partitions = ["system_ext", "product"]
+partitions = ["product"]
 exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
 include_folders = ["app", "priv-app"]
 # include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
@@ -56,10 +56,10 @@ for partition in partitions:
                     continue
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(destination_dir, relative_path)
-            P.green(f"Copying {file_path} to {destination_path}")
+            file_size = os.path.getsize(destination_path) / (1024 * 1024)
+            P.green(f"Copying {file_path} to {destination_path}, Size: {file_size:.2f} MB")
             FileOp.copy_file(file_path, destination_path)
-    if repo.due_changes():
-        repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
-    else:
-        print("No changes to push")
-
+            if repo.due_changes():
+                repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
+            else:
+                print("No changes to push")
