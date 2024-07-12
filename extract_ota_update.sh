@@ -72,5 +72,5 @@ for p in $PARTITIONS; do
 done
 
 cd ..
-python3 push_oem_files_on_server.py $UNZIP_DIR
+python3 push_oem_files_on_server.py -N $UNZIP_DIR
 cd ..
