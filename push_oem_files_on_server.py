@@ -11,7 +11,7 @@ load_dotenv()
 gitlab_token = os.getenv("GITLAB_TOKEN")
 working_dir = os.getcwd()
 print(f"Working directory: {working_dir}")
-partitions = ["system", "product", "system_ext"]
+partitions = ["system/system", "product", "system_ext"]
 exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
 include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
 must_include_files = [".apk"]
