@@ -59,6 +59,7 @@ for partition in partitions:
     # Special case for "system/system"
     if partition == "system/system":
         destination_dir = f"{repo.working_tree_dir}/system"
+        partition = "system"
     else:
         destination_dir = f"{repo.working_tree_dir}/{partition}"
 
