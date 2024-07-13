@@ -69,6 +69,7 @@ for partition in partitions:
             skip_further_check = False
             file_path = os.path.join(root, file)
             if any(file.endswith(extension) for extension in must_include_files):
+                P.green(f"Copying {file_path} as it is in must include files")
                 skip_further_check = True
             if not skip_further_check:
                 if any(folder in file_path for folder in exclude_folders):
