@@ -17,8 +17,23 @@ which ssh-keyscan || (apt-get update && apt-get install -y openssh-client)
 # Start ssh-agent
 eval "$(ssh-agent -s)"
 
-# Add SSH private key to the ssh-agent
-echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+# Function to check if a string is base64 encoded
+is_base64() {
+  echo "$1" | base64 --decode > /dev/null 2>&1
+  return $?
+}
+
+# Check if the SSH key is base64 encoded
+if is_base64 "$SSH_PRIVATE_KEY"; then
+  DECODED_SSH_KEY=$(echo "$SSH_PRIVATE_KEY" | base64 --decode | tr -d '\r')
+  echo "SSH_PRIVATE_KEY was base64 encoded and has been decoded."
+else
+  DECODED_SSH_KEY=$(echo "$SSH_PRIVATE_KEY" | tr -d '\r')
+  echo "SSH_PRIVATE_KEY was not base64 encoded and has been used directly."
+fi
+
+# Add the decoded SSH private key to the ssh-agent
+echo "$DECODED_SSH_KEY" | ssh-add -
 
 # Add SSH keys to known_hosts to avoid prompts
 ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts || echo "Failed to scan frs.sourceforge.net"
