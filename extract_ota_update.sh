@@ -59,7 +59,7 @@ pip3 install -r requirements.txt
 
 URL=$(python3 main.py)
 echo "Download link: $URL"
-
+7z --version
 if [ -z "$URL" ]; then
     echo "No URL found"
     exit 1
@@ -80,6 +80,7 @@ for p in $PARTITIONS; do
         mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
         echo "Trying to extract $p partition via 7z."
         7z x "$p".img -y -o"$p"/ > /dev/null 2>&1
+        echo "7z exit status: $?"
         if [ $? -eq 0 ]; then
             rm "$p".img > /dev/null 2>&1
         else
