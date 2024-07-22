@@ -82,10 +82,13 @@ for p in $PARTITIONS; do
         7z x "$p".img -y -o"$p"/ > /dev/null 2>&1
         if [ $? -eq 0 ]; then
             rm "$p".img > /dev/null 2>&1
+        else
+            echo "Failed to extract $p partition via 7z."
         fi
     fi
 done
 
 cd ..
+ls -R
 python3 push_oem_files_on_server.py -N $UNZIP_DIR
 cd ..
