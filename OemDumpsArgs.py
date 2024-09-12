@@ -8,7 +8,7 @@ class OemDumpsArgs(Args):
         self.parser = argparse.ArgumentParser(
             description="NikGapps build command help!")
         self.parser.add_argument(
-            '-N', '--fileName', help="It is the name of the file we're working on",
+            '-F', '--fileName', help="It is the name of the file we're working on",
             default="", type=str)
         self.parser.add_argument(
             '-D', '--download', help="It is the url of the file we wish to download",

@@ -91,5 +91,5 @@ done
 
 cd ..
 ls -R
-python3 push_oem_files_on_server.py -N $UNZIP_DIR
+python3 push_oem_files_on_server.py --fileName $UNZIP_DIR
 cd ..
