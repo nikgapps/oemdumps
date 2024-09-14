@@ -1,16 +1,21 @@
 # Use an official Ubuntu base image
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Add the deadsnakes PPA to get Python 3.12
-RUN apt-get update && apt-get install -y software-properties-common \
- && add-apt-repository ppa:deadsnakes/ppa \
- && apt-get update
-
-# Install dependencies including Python 3.12 and pip
-RUN apt-get install -y \
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+    build-essential \
+    libguestfs-tools \
+    e2fsprogs \
+    android-sdk-libsparse-utils \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
+    python3-pip \
+    brotli \
     git \
     git-lfs \
     unace \
@@ -27,11 +32,6 @@ RUN apt-get install -y \
     cabextract \
     device-tree-compiler \
     liblzma-dev \
-    python3.12 \
-    python3.12-venv \
-    python3.12-dev \
-    python3-pip \
-    brotli \
     liblz4-tool \
     axel \
     gawk \
@@ -39,36 +39,31 @@ RUN apt-get install -y \
     detox \
     cpio \
     rename \
-    liblz4-dev \
     wget \
     curl \
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-# Clone necessary repositories with submodules
+# Clone necessary repositories
 RUN git clone --recurse-submodules https://github.com/AndroidDumps/Firmware_extractor.git /Firmware_extractor \
  && git clone --recurse-submodules https://github.com/carlitros900/mkbootimg_tools.git /mkbootimg_tools \
  && git clone --recurse-submodules https://github.com/marin-m/vmlinux-to-elf.git /vmlinux-to-elf \
- && git clone https://github.com/vm03/payload_dumper.git /payload_dumper
+ && git clone https://github.com/vm03/payload_dumper.git /payload_dumper \
+ && git clone https://github.com/xpirt/sdat2img.git /sdat2img
+
+# Install Python packages
+RUN python3.12 -m venv /venv && \
+    . /venv/bin/activate && \
+    pip install --no-cache-dir --upgrade pip
 
 # Set work directory
 WORKDIR /usr/src/workdir
 
-# Create a virtual environment and install Python packages
-RUN python3.12 -m venv venv
-ENV PATH="/usr/src/workdir/venv/bin:$PATH"
-RUN pip install --upgrade pip \
- && pip install aospdtgen backports.lzma extract-dtb protobuf==3.20.1 pycryptodome docopt zstandard
+# Copy the rest of the application code into the container
+COPY . .
 
-# Install payload_dumper dependencies
-WORKDIR /payload_dumper
-RUN /usr/src/workdir/venv/bin/pip install -r requirements.txt
-
-# Set work directory back to /usr/src/workdir
-WORKDIR /usr/src/workdir
-
-# Copy the script into the container
-COPY extract_ota_update.sh /usr/src/workdir/extract_ota_update.sh
-RUN chmod +x /usr/src/workdir/extract_ota_update.sh
+# Ensure all .sh scripts have execute permissions
+RUN find . -name "*.sh" -exec chmod +x {} +
 
 # Set the entrypoint
-ENTRYPOINT ["bash", "/usr/src/workdir/extract_ota_update.sh"]
+ENTRYPOINT ["bash", "-c"]

@@ -29,7 +29,10 @@ if unzip -l "$FILE" | grep -q "payload.bin"; then
     echo "Extracting payload.bin from the zip file..."
     unzip -j "$FILE" "payload.bin" -d "$UNZIP_DIR"
     echo "Extracting payload.bin..."
-    python3 payload_dumper.py "$UNZIP_DIR/payload.bin" --images "$partition_list" --out "$UNZIP_DIR"
+    for p in $partition_list; do
+        echo "Extracting $p.img from payload.bin..."
+        python3 /payload_dumper/payload_dumper.py "$UNZIP_DIR/payload.bin" --images "$p" --out "$UNZIP_DIR"
+    done
     rm -rf "$UNZIP_DIR/payload.bin"
 else
     for p in $partition_list; do
