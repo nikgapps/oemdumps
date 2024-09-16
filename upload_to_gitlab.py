@@ -1,6 +1,8 @@
 import argparse
+import os
 import re
 
+from NikGapps.helper.FileOp import FileOp
 from dotenv import load_dotenv
 
 parser = argparse.ArgumentParser(description='OTA payload dumper')
@@ -17,4 +19,11 @@ if match:
     file_name = f"{device_name}_{date}"
 load_dotenv()
 print(f"File name: {file_name}")
+if FileOp.dir_exists(file_name):
+    print(f"Directory exists: {file_name}")
+    for root, dirs, files in os.walk(file_name):
+        for file in files:
+            print(f"File: {file}")
+else:
+    print(f"Directory does not exist: {file_name}")
 
