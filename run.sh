@@ -68,4 +68,4 @@ ls -R
 echo "-----------------------------------------------"
 cd ..
 ls
-python3 upload_to_gitlab.py $UNZIP_DIR
+python3 upload_to_gitlab.py --folder $UNZIP_DIR
