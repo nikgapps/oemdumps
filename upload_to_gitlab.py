@@ -19,11 +19,11 @@ if match:
     file_name = f"{device_name}_{date}"
 load_dotenv()
 print(f"File name: {file_name}")
-if FileOp.dir_exists(file_name):
-    print(f"Directory exists: {file_name}")
-    for root, dirs, files in os.walk(file_name):
+if FileOp.dir_exists(args.folder):
+    print(f"Directory exists: {args.folder}")
+    for root, dirs, files in os.walk(args.folder):
         for file in files:
             print(f"File: {file}")
 else:
-    print(f"Directory does not exist: {file_name}")
+    print(f"Directory does not exist: {args.folder}")
 
