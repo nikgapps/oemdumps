@@ -23,7 +23,8 @@ if FileOp.dir_exists(args.folder):
     print(f"Directory exists: {args.folder}")
     for root, dirs, files in os.walk(args.folder):
         for file in files:
-            print(f"File: {file}")
+            if str(file).endswith(".apk"):
+                print(f"File: {os.path.join(root, file)}")
 else:
     print(f"Directory does not exist: {args.folder}")
 

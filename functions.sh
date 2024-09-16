@@ -73,6 +73,7 @@ extract_img_7z() {
         echo "Trying to extract $1.img using 7z."
         7z x "$1.img" -y -o"$1" >/dev/null 2>&1 || echo "Failed to extract $1.img using 7z."
         echo "Extraction of $1.img complete."
+        rm -f "$1.img"
     else
         echo "$1.img not found."
     fi

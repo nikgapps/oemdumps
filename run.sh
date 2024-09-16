@@ -64,8 +64,6 @@ for p in $partition_list; do
     fi
 done
 echo "-----------------------------------------------"
-ls -R
-echo "-----------------------------------------------"
 cd ..
 ls
 python3 upload_to_gitlab.py --folder $UNZIP_DIR
