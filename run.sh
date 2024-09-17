@@ -27,15 +27,15 @@ partition_list="system product system_ext"
 
 unzip -l "$FILE"
 
-if unzip -l "$FILE" | grep -q "META-INF/com/android/metadata"; then
-    echo "Extracting metadata from the zip file..."
-    unzip -j "$FILE" "META-INF/com/android/metadata" -d "$UNZIP_DIR"
-    cat "$UNZIP_DIR/metadata"
-    ANDROID_VERSION=$(grep 'post-build' "$UNZIP_DIR/metadata" | cut -d ':' -f 2 | cut -d '/' -f 1)
-    echo "Android Version: $ANDROID_VERSION"
-    echo "$ANDROID_VERSION" > "$UNZIP_DIR/android_version.txt"
-    echo "Android version information saved to $UNZIP_DIR/android_version.txt"
-fi
+#if unzip -l "$FILE" | grep -q "META-INF/com/android/metadata"; then
+#    echo "Extracting metadata from the zip file..."
+#    unzip -j "$FILE" "META-INF/com/android/metadata" -d "$UNZIP_DIR"
+#    cat "$UNZIP_DIR/metadata"
+#    ANDROID_VERSION=$(grep '^post-build=' "$UNZIP_DIR/metadata" | cut -d ':' -f 2 | cut -d '/' -f 1)
+#    echo "Android Version: $ANDROID_VERSION"
+#    echo "$ANDROID_VERSION" > "$UNZIP_DIR/android_version.txt"
+#    echo "Android version information saved to $UNZIP_DIR/android_version.txt"
+#fi
 
 if unzip -l "$FILE" | grep -q "payload.bin"; then
     echo "Extracting payload.bin from the zip file..."
@@ -62,9 +62,9 @@ fi
 
 echo "Extraction complete. Files extracted to $UNZIP_DIR"
 echo "-----------------------------------------------"
-ls -R
-echo "-----------------------------------------------"
 cd $UNZIP_DIR
+ls
+echo "-----------------------------------------------"
 for p in $partition_list; do
     if [ -f "$p.new.dat.br" ]; then
         extract_dat_br $p
@@ -88,6 +88,7 @@ for p in $partition_list; do
         fi
     fi
 done
+ls
 echo "-----------------------------------------------"
 cd ..
 ls
