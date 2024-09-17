@@ -78,3 +78,34 @@ extract_img_7z() {
         echo "$1.img not found."
     fi
 }
+
+fetch_android_version() {
+    case "$1" in
+      system)
+          build_prop_path="$1/system/build.prop"
+          ;;
+      product | system_ext)
+          build_prop_path="$1/etc/build.prop"
+          ;;
+      *)
+          echo "Unknown partition: $1"
+          return 1
+          ;;
+    esac
+
+    if [ -f "$build_prop_path" ]; then
+        echo "build.prop found in $1 partition."
+        VERSION=$(grep "ro.$1.build.version.release" "$build_prop_path" | cut -d '=' -f 2)
+        if [ -n "$VERSION" ]; then
+            echo "$1 Partition Android Version: $VERSION"
+            echo "$VERSION"
+        else
+            echo "Version information not found in $1 partition."
+            return 1
+        fi
+    else
+        echo "build.prop not found in the $1 partition."
+        return 1
+    fi
+}
+

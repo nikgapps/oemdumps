@@ -8,15 +8,21 @@ from NikGapps.helper.git.GitlabManager import GitLabManager
 from dotenv import load_dotenv
 
 from helper import get_repo_name
+
 # https://dl.google.com/developers/android/vic/images/ota/cheetah_beta-ota-ap41.240823.009-971ac562.zip
 parser = argparse.ArgumentParser(description='OTA payload dumper')
 parser.add_argument('--folder', default="", help='folder to read from')
+parser.add_argument('--android_version', default="", help='Android version')
 args = parser.parse_args()
 
 source_directory = str(args.folder)
+android_version = str(args.android_version)
+print(f"Android Version: {android_version}")
 print(f"Source Directory: {source_directory}")
+if android_version == "":
+    exit("Android version is required")
 oem, repo_date = get_repo_name(source_directory)
-repo_name = f"{oem}_{repo_date}"
+repo_name = f"{android_version}_{oem}_{repo_date}"
 print(f"Repo name: {repo_name}")
 load_dotenv()
 if FileOp.dir_exists(source_directory):
@@ -30,7 +36,6 @@ if FileOp.dir_exists(source_directory):
     must_include_files = ["build.prop", ".apk"]
     must_exclude_files = [".prop", ".vdex", ".odex"]
     output_folder = "output"
-    android_version = "15"
     gitlab_manager = GitLabManager(private_token=gitlab_token)
     project = gitlab_manager.get_project(repo_name)
     if not project:

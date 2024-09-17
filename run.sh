@@ -25,6 +25,18 @@ mkdir -p "$UNZIP_DIR"
 partition_list="system product system_ext"
 # partition_list="system_ext"
 
+unzip -l "$FILE"
+
+if unzip -l "$FILE" | grep -q "META-INF/com/android/metadata"; then
+    echo "Extracting metadata from the zip file..."
+    unzip -j "$FILE" "META-INF/com/android/metadata" -d "$UNZIP_DIR"
+    cat "$UNZIP_DIR/metadata"
+    ANDROID_VERSION=$(grep 'post-build' "$UNZIP_DIR/metadata" | cut -d ':' -f 2 | cut -d '/' -f 1)
+    echo "Android Version: $ANDROID_VERSION"
+    echo "$ANDROID_VERSION" > "$UNZIP_DIR/android_version.txt"
+    echo "Android version information saved to $UNZIP_DIR/android_version.txt"
+fi
+
 if unzip -l "$FILE" | grep -q "payload.bin"; then
     echo "Extracting payload.bin from the zip file..."
     unzip -j "$FILE" "payload.bin" -d "$UNZIP_DIR"
@@ -63,7 +75,20 @@ for p in $partition_list; do
         echo "$p.new.dat.br or $p.img not found."
     fi
 done
+for p in $partition_list; do
+    if [ -f "android_version.txt" ]; then
+        ANDROID_VERSION=$(cat android_version.txt)
+        if [ -n "$ANDROID_VERSION" ]; then
+            break
+        fi
+    else
+        ANDROID_VERSION=$(fetch_android_version $p)
+        if [ -n "$ANDROID_VERSION" ]; then
+            break
+        fi
+    fi
+done
 echo "-----------------------------------------------"
 cd ..
 ls
-python3 upload_to_gitlab.py --folder $UNZIP_DIR
+python3 upload_to_gitlab.py --folder $UNZIP_DIR --android_version $ANDROID_VERSION
