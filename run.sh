@@ -76,6 +76,7 @@ for p in $partition_list; do
     fi
 done
 for p in $partition_list; do
+    ANDROID_VERSION=""
     if [ -f "android_version.txt" ]; then
         ANDROID_VERSION=$(cat android_version.txt)
         if [ -n "$ANDROID_VERSION" ]; then
@@ -92,5 +93,7 @@ ls
 echo "-----------------------------------------------"
 cd ..
 ls
+echo "-----------------------------------------------"
 echo "ANDROID_VERSION: $ANDROID_VERSION"
+echo "-----------------------------------------------"
 python3 upload_to_gitlab.py --folder $UNZIP_DIR --android_version $ANDROID_VERSION
