@@ -9,7 +9,7 @@ on:
       - 'script.sh'
       - 'extract_ota_update.sh'
       - 'run.sh'
-      - 'function.sh'
+      - 'functions.sh'
       - '*/*.yml'
   workflow_dispatch:
 
