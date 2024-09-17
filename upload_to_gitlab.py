@@ -27,7 +27,7 @@ if FileOp.dir_exists(source_directory):
     partitions = ["system/system", "product", "system_ext"]
     exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
     include_folders = ["app", "priv-app", "etc", "framework", "lib64", "overlay", "tts", "usr", "lib"]
-    must_include_files = [".apk"]
+    must_include_files = ["build.prop", ".apk"]
     must_exclude_files = [".prop", ".vdex", ".odex"]
     output_folder = "output"
     android_version = "15"
