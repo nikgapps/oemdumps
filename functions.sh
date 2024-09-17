@@ -94,10 +94,8 @@ fetch_android_version() {
     esac
 
     if [ -f "$build_prop_path" ]; then
-        echo "build.prop found in $1 partition."
         VERSION=$(grep "ro.$1.build.version.release" "$build_prop_path" | cut -d '=' -f 2)
         if [ -n "$VERSION" ]; then
-            echo "$1 Partition Android Version: $VERSION"
             echo "$VERSION"
         else
             echo "Version information not found in $1 partition."
