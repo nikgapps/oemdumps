@@ -79,6 +79,9 @@ if FileOp.dir_exists(source_directory):
                         continue
                 relative_path = os.path.relpath(file_path, source_dir)
                 destination_path = os.path.join(destination_dir, relative_path)
+                if not FileOp.file_exists(file_path):
+                    P.red(f"File does not exist: {file_path}")
+                    continue
                 file_size = os.path.getsize(file_path) / (1024 * 1024)
                 FileOp.copy_file(file_path, destination_path)
                 P.green(f"Copied {file_path} "
