@@ -92,4 +92,5 @@ ls
 echo "-----------------------------------------------"
 cd ..
 ls
+echo "ANDROID_VERSION: $ANDROID_VERSION"
 python3 upload_to_gitlab.py --folder $UNZIP_DIR --android_version $ANDROID_VERSION
