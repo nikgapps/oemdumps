@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from helper import get_repo_name
 
 # https://dl.google.com/developers/android/vic/images/ota/cheetah_beta-ota-ap41.240823.009-971ac562.zip
+# https://dl.google.com/developers/android/vic/images/ota/caiman_beta-ota-ap41.240823.009-04e53804.zip
 parser = argparse.ArgumentParser(description='OTA payload dumper')
 parser.add_argument('--folder', default="", help='folder to read from')
 parser.add_argument('--android_version', default="", help='Android version')
