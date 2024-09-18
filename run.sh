@@ -13,13 +13,21 @@ primary_repo="oemdumps"
 git clone git@github.com:nikgapps/$primary_repo.git
 cd $primary_repo
 pip3 install -r requirements.txt
-echo "Downloading $URL..."
-python3 download.py --download $URL
 FILE=$(get_base_name $URL)
 echo "File name is $FILE"
 EXTENSION=$(echo ${FILE##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
+if [ -f "/mnt/host_files/$FILE" ]; then
+    echo "ZIP file found from mounted partition!"
+    UNZIP_DIR="/mnt/host_files/$UNZIP_DIR"
+    FILE="/mnt/host_files/$FILE"
+else
+    echo "ZIP file not found from mounted partition!"
+    echo "Downloading $URL..."
+    python3 download.py --download $URL
+fi
 
+rm -rf "$UNZIP_DIR"
 mkdir -p "$UNZIP_DIR"
 
 partition_list="system product system_ext"
@@ -27,15 +35,15 @@ partition_list="system product system_ext"
 
 unzip -l "$FILE"
 
-#if unzip -l "$FILE" | grep -q "META-INF/com/android/metadata"; then
-#    echo "Extracting metadata from the zip file..."
-#    unzip -j "$FILE" "META-INF/com/android/metadata" -d "$UNZIP_DIR"
-#    cat "$UNZIP_DIR/metadata"
-#    ANDROID_VERSION=$(grep '^post-build=' "$UNZIP_DIR/metadata" | cut -d ':' -f 2 | cut -d '/' -f 1)
-#    echo "Android Version: $ANDROID_VERSION"
-#    echo "$ANDROID_VERSION" > "$UNZIP_DIR/android_version.txt"
-#    echo "Android version information saved to $UNZIP_DIR/android_version.txt"
-#fi
+if unzip -l "$FILE" | grep -q "META-INF/com/android/metadata"; then
+    echo "Extracting metadata from the zip file..."
+    unzip -j "$FILE" "META-INF/com/android/metadata" -d "$UNZIP_DIR"
+    cat "$UNZIP_DIR/metadata"
+    ANDROID_VERSION=$(grep '^post-build=' "$UNZIP_DIR/metadata" | cut -d ':' -f 2 | cut -d '/' -f 1)
+    echo "Android Version: $ANDROID_VERSION"
+    echo "$ANDROID_VERSION" > "$UNZIP_DIR/android_version.txt"
+    echo "Android version information saved to $UNZIP_DIR/android_version.txt"
+fi
 
 if unzip -l "$FILE" | grep -q "payload.bin"; then
     echo "Extracting payload.bin from the zip file..."
@@ -75,6 +83,7 @@ for p in $partition_list; do
         echo "$p.new.dat.br or $p.img not found."
     fi
 done
+echo "ANDROID_VERSION before: $ANDROID_VERSION"
 for p in $partition_list; do
     ANDROID_VERSION=""
     if [ -f "android_version.txt" ]; then
@@ -83,6 +92,7 @@ for p in $partition_list; do
             break
         fi
     else
+        echo "Fetching Android version from $p partition..."
         ANDROID_VERSION=$(fetch_android_version $p)
         if [ -n "$ANDROID_VERSION" ]; then
             break
@@ -96,4 +106,5 @@ ls
 echo "-----------------------------------------------"
 echo "ANDROID_VERSION: $ANDROID_VERSION"
 echo "-----------------------------------------------"
+cd $primary_repo
 python3 upload_to_gitlab.py --folder $UNZIP_DIR --android_version $ANDROID_VERSION

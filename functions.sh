@@ -94,7 +94,7 @@ fetch_android_version() {
     esac
 
     if [ -f "$build_prop_path" ]; then
-        VERSION=$(grep "ro.$1.build.version.release" "$build_prop_path" | cut -d '=' -f 2)
+        VERSION=$(grep -w "ro.$1.build.version.release" "$build_prop_path" | head -n 1 | cut -d '=' -f 2)
         if [ -n "$VERSION" ]; then
             echo "$VERSION"
         else
@@ -106,4 +106,3 @@ fetch_android_version() {
         return 1
     fi
 }
-
