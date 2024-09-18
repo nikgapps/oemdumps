@@ -106,5 +106,5 @@ ls
 echo "-----------------------------------------------"
 echo "ANDROID_VERSION: $ANDROID_VERSION"
 echo "-----------------------------------------------"
-cd $primary_repo
+#cd /usr/src/workdir/$primary_repo
 python3 upload_to_gitlab.py --folder $UNZIP_DIR --android_version $ANDROID_VERSION
