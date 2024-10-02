@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rename \
     wget \
     curl \
+    openjdk-17-jdk \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
