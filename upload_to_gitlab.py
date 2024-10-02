@@ -94,10 +94,10 @@ if FileOp.dir_exists(source_directory):
                 P.green(f"Copied {file_path} "
                         f"\n  to {destination_path}"
                         f"\nSize: {file_size:.2f} MB")
-                if file_path.lower().__contains__(os.sep + "overlay"):
-                    o = Overlay(file_path)
+                if destination_path.lower().__contains__(os.sep + "overlay"):
+                    o = Overlay(destination_path)
                     if not o.extract_overlay():
-                        print("Overlay extraction of " + file_path + " failed")
+                        print("Overlay extraction of " + destination_path + " failed")
 
         if repo.due_changes():
             repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
