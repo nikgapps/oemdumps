@@ -6,3 +6,4 @@ protobuf~=5.27.2
 six>=1.16.0
 bsdiff4>=1.1.5
 python-dotenv~=1.0.1
+niklibrary~=0.17

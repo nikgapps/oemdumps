@@ -6,6 +6,7 @@ from NikGapps.helper.P import P
 from NikGapps.helper.git.GitOperations import GitOperations
 from NikGapps.helper.git.GitlabManager import GitLabManager
 from dotenv import load_dotenv
+from niklibrary.build.Overlay import Overlay
 
 from helper import get_repo_name
 
@@ -93,6 +94,10 @@ if FileOp.dir_exists(source_directory):
                 P.green(f"Copied {file_path} "
                         f"\n  to {destination_path}"
                         f"\nSize: {file_size:.2f} MB")
+                if file_path.lower().__contains__(os.sep + "overlay"):
+                    o = Overlay(file_path)
+                    if not o.extract_overlay():
+                        print("Overlay extraction of " + file_path + " failed")
 
         if repo.due_changes():
             repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
