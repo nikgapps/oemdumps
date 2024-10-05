@@ -1,12 +1,12 @@
 import argparse
 import os
 
-from NikGapps.helper.FileOp import FileOp
-from NikGapps.helper.P import P
-from NikGapps.helper.git.GitOperations import GitOperations
-from NikGapps.helper.git.GitlabManager import GitLabManager
+from niklibrary.git.GitOp import GitOp
+from niklibrary.git.GitlabManager import GitLabManager
+from niklibrary.helper.F import F
 from dotenv import load_dotenv
 from niklibrary.build.Overlay import Overlay
+from niklibrary.helper.P import P
 
 from helper import get_repo_name
 
@@ -27,7 +27,7 @@ oem, repo_date = get_repo_name(source_directory)
 repo_name = f"{android_version}_{oem}_{repo_date}"
 print(f"Repo name: {repo_name}")
 load_dotenv()
-if FileOp.dir_exists(source_directory):
+if F.dir_exists(source_directory):
     print(f"Directory exists: {source_directory}")
     gitlab_token = os.getenv("GITLAB_TOKEN")
     working_dir = os.getcwd()
@@ -49,7 +49,7 @@ if FileOp.dir_exists(source_directory):
     else:
         print(f"Project already exists: {project.name}")
     repo_dir = working_dir + os.sep + output_folder + os.sep + repo_name
-    repo = GitOperations.setup_repo(repo_dir=repo_dir,
+    repo = GitOp.setup_repo(repo_dir=repo_dir,
                                     repo_url=project.ssh_url_to_repo)
     for partition in partitions:
         source_dir = f"{working_dir}{os.sep}{source_directory}{os.sep}{partition}"
@@ -86,11 +86,11 @@ if FileOp.dir_exists(source_directory):
                         continue
                 relative_path = os.path.relpath(file_path, source_dir)
                 destination_path = os.path.join(destination_dir, relative_path)
-                if not FileOp.file_exists(file_path):
+                if not F.file_exists(file_path):
                     P.red(f"File does not exist: {file_path}")
                     continue
                 file_size = os.path.getsize(file_path) / (1024 * 1024)
-                FileOp.copy_file(file_path, destination_path)
+                F.copy_file(file_path, destination_path)
                 P.green(f"Copied {file_path} "
                         f"\n  to {destination_path}"
                         f"\nSize: {file_size:.2f} MB")

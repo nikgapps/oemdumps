@@ -2,13 +2,13 @@ import os
 import re
 import time
 
-from NikGapps.helper.FileOp import FileOp
-from NikGapps.helper.P import P
-from NikGapps.helper.git.GitOperations import GitOperations
-from NikGapps.helper.git.GitlabManager import GitLabManager
 from dotenv import load_dotenv
 
 from OemDumpsArgs import OemDumpsArgs
+from niklibrary.git.GitOp import GitOp
+from niklibrary.git.GitlabManager import GitLabManager
+from niklibrary.helper.F import F
+from niklibrary.helper.P import P
 
 args = OemDumpsArgs()
 file_name = str(args.fileName).replace(".zip", "")
@@ -47,7 +47,7 @@ else:
     # *.so filter=lfs diff=lfs merge=lfs -text"""
     # gitlab_manager.reset_repository(project.path, gitattributes=message)
 
-repo = GitOperations.setup_repo(repo_dir=repo_dir,
+repo = GitOp.setup_repo(repo_dir=repo_dir,
                                 repo_url=project.ssh_url_to_repo)
 for partition in partitions:
     source_dir = f"{working_dir}{os.sep}{output_folder}{os.sep}{partition}"
@@ -85,7 +85,7 @@ for partition in partitions:
             relative_path = os.path.relpath(file_path, source_dir)
             destination_path = os.path.join(destination_dir, relative_path)
             file_size = os.path.getsize(file_path) / (1024 * 1024)
-            FileOp.copy_file(file_path, destination_path)
+            F.copy_file(file_path, destination_path)
             P.green(f"Copied {file_path} "
                     f"\n  to {destination_path}"
                     f"\nSize: {file_size:.2f} MB")
