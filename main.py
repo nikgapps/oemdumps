@@ -1,11 +1,11 @@
 import zipfile
-from niklibrary.oem.Google import Google
+
+from niklibrary.oem.OemOp import OemOp
 from niklibrary.web.Download import Download
 
 device_name = "husky"
 extract_folder = "extracted"
-g = Google(device_name)
-categorized_url = g.get_latest_ota_url()
+categorized_url = OemOp.get_latest_ota_url(device_name)
 base_name = categorized_url.split('/')[-1]
 filepath = Download.url(categorized_url)
 with zipfile.ZipFile(filepath, 'r') as zip_ref:
