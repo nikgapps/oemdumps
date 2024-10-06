@@ -1,9 +1,6 @@
 import argparse
 
-from NikGapps.helper.Args import Args
-
-
-class OemDumpsArgs(Args):
+class OemDumpsArgs:
     def __init__(self) -> None:
         self.parser = argparse.ArgumentParser(
             description="NikGapps build command help!")
