@@ -10,6 +10,7 @@ on:
       - 'run.sh'
       - 'functions.sh'
       - 'upload_to_gitlab.py'
+      - 'requirements.txt'
       - '*/*.yml'
   workflow_dispatch:
 
