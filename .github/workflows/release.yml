@@ -9,6 +9,7 @@ on:
       - 'script.sh'
       - 'run.sh'
       - 'functions.sh'
+      - 'upload_to_gitlab.py'
       - '*/*.yml'
   workflow_dispatch:
 

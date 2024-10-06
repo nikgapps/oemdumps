@@ -1,5 +1,6 @@
 import argparse
 import os
+from pathlib import Path
 
 from niklibrary.git.GitOp import GitOp
 from niklibrary.git.GitlabManager import GitLabManager
@@ -7,6 +8,7 @@ from niklibrary.helper.F import F
 from dotenv import load_dotenv
 from niklibrary.build.Overlay import Overlay
 from niklibrary.helper.P import P
+from niklibrary.oem.OemOp import OemOp
 
 from helper import get_repo_name
 
@@ -30,7 +32,7 @@ load_dotenv()
 if F.dir_exists(source_directory):
     print(f"Directory exists: {source_directory}")
     gitlab_token = os.getenv("GITLAB_TOKEN")
-    working_dir = os.getcwd()
+    working_dir = str(Path(source_directory).parent)
     print(f"Working directory: {working_dir}")
     partitions = ["system/system", "product", "system_ext"]
     exclude_folders = [f"system{os.sep}system", f"oat{os.sep}"]
@@ -100,6 +102,7 @@ if F.dir_exists(source_directory):
                         print("Overlay extraction of " + destination_path + " failed")
 
         if repo.due_changes():
+            OemOp.write_all_files(repo.working_tree_dir)
             repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
         else:
             print("No changes to push")
