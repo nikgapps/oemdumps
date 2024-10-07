@@ -8,12 +8,14 @@ from niklibrary.helper.F import F
 from dotenv import load_dotenv
 from niklibrary.build.Overlay import Overlay
 from niklibrary.helper.P import P
+from niklibrary.helper.SystemStat import SystemStat
 from niklibrary.oem.OemOp import OemOp
 
 from helper import get_repo_name
 
 # https://dl.google.com/developers/android/vic/images/ota/cheetah_beta-ota-ap41.240823.009-971ac562.zip
 # https://dl.google.com/developers/android/vic/images/ota/caiman_beta-ota-ap41.240823.009-04e53804.zip
+SystemStat.show_stats()
 parser = argparse.ArgumentParser(description='OTA payload dumper')
 parser.add_argument('--folder', default="", help='folder to read from')
 parser.add_argument('--android_version', default="", help='Android version')
