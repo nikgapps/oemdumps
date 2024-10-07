@@ -50,11 +50,11 @@ if F.dir_exists(source_directory):
                                                        content=gitattributes)
     else:
         print(f"Project already exists: {project.name}")
-    repo_dir = working_dir + os.sep + output_folder + os.sep + repo_name
+    repo_dir = working_dir + os.sep + repo_name
     repo = GitOp.setup_repo(repo_dir=repo_dir,
                                     repo_url=project.ssh_url_to_repo)
     for partition in partitions:
-        source_dir = f"{working_dir}{os.sep}{source_directory}{os.sep}{partition}"
+        source_dir = f"{source_directory}{os.sep}{partition}"
         print(f"Source: {source_dir}")
         if not os.path.exists(source_dir):
             print(f"{source_dir} does not exist")
