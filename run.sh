@@ -15,8 +15,15 @@ cd $primary_repo
 pip3 install -r requirements.txt
 FILE=$(get_base_name $URL)
 echo "File name is $FILE"
+
+[ -z "$FILE" ] && URL="$(python3 downloadlink.py --download $URL)" && FILE=$(get_base_name $URL)
 EXTENSION=$(echo ${FILE##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
+
+echo "File: $FILE"
+echo "Unzip dir: $UNZIP_DIR"
+echo "Extension: $EXTENSION"
+
 if [ -f "/mnt/host_files/$FILE" ]; then
     echo "ZIP file found from mounted partition!"
     UNZIP_DIR="/mnt/host_files/$UNZIP_DIR"
