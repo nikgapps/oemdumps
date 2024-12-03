@@ -55,7 +55,8 @@ RUN git clone --recurse-submodules https://github.com/AndroidDumps/Firmware_extr
 # Install Python packages
 RUN python3.12 -m venv /venv && \
     . /venv/bin/activate && \
-    pip install --no-cache-dir --upgrade pip
+    pip install --no-cache-dir --upgrade pip && \
+    pip install zstandard
 
 # Set work directory
 WORKDIR /usr/src/workdir
