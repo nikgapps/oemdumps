@@ -28,7 +28,7 @@ print(f"Source Directory: {source_directory}")
 if android_version == "":
     exit("Android version is required")
 oem, repo_date = get_repo_name(source_directory)
-repo_name = f"{android_version}_{oem}_{repo_date}"
+repo_name = f"{android_version}_{oem}" + (f"_{repo_date}" if repo_date is not None else "")
 print(f"Repo name: {repo_name}")
 load_dotenv()
 if F.dir_exists(source_directory):
