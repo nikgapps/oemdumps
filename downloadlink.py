@@ -15,7 +15,8 @@ google_devices = {
     "tokay": "Pixel 9",
     "caiman": "Pixel 9 Pro",
     "komodo": "Pixel 9 Pro XL",
-    "comet": "Pixel 9 Pro Fold"
+    "comet": "Pixel 9 Pro Fold",
+    "mustang": "Pixel 10 Pro XL"
 }
 
 parser = argparse.ArgumentParser(description='OTA payload dumper')
