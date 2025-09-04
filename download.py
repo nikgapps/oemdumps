@@ -3,21 +3,13 @@ from niklibrary.oem.OemOp import OemOp
 from niklibrary.web.Download import Download
 
 if __name__ == "__main__":
-    google_devices = {
-        "panther": "Pixel 7",
-        "cheetah": "Pixel 7 Pro",
-        "lynx": "Pixel 7a",
-        "shiba": "Pixel 8",
-        "husky": "Pixel 8 Pro",
-        "akita": "Pixel 8a",
-        "felix": "Pixel Fold",
-        "tangorpro": "Pixel Tablet",
-        "tokay": "Pixel 9",
-        "caiman": "Pixel 9 Pro",
-        "komodo": "Pixel 9 Pro XL",
-        "comet": "Pixel 9 Pro Fold",
-        "mustang": "Pixel 10 Pro XL",
-    }
+    google_devices = OemOp.get_google_devices()
+
+    if google_devices is None:
+        google_devices = {
+            "caiman": "Pixel 9 Pro",
+            "mustang": "Pixel 10 Pro XL"
+        }
 
     parser = argparse.ArgumentParser(description='OTA payload dumper')
     parser.add_argument('--download', default="", help='folder to read from')
