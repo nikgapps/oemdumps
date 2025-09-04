@@ -2,7 +2,7 @@ import argparse
 
 from niklibrary.oem.OemOp import OemOp
 
-device_name = "caiman"
+device_name = "mustang"
 google_devices = {
     "panther": "Pixel 7",
     "cheetah": "Pixel 7 Pro",
