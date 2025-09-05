@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from niklibrary.build.Overlay import Overlay
 from niklibrary.helper.P import P
 from niklibrary.helper.SystemStat import SystemStat
+from niklibrary.json.Json import Json
 from niklibrary.oem.OemOp import OemOp
 
 from helper import get_repo_name
@@ -105,6 +106,9 @@ if F.dir_exists(source_directory):
 
         if repo.due_changes():
             OemOp.write_all_files(repo.working_tree_dir)
+            filename = oem + ".json"
+            filename_dict = OemOp.get_google_oem_dump_dict_async(repo.working_tree_dir)
+            Json.write_dict_to_file(filename_dict, f"{repo.working_tree_dir}{os.sep}{filename}")
             repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
         else:
             print("No changes to push")
