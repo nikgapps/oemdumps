@@ -104,11 +104,12 @@ if F.dir_exists(source_directory):
                     if not o.extract_overlay():
                         print("Overlay extraction of " + destination_path + " failed")
 
+        filename = oem + ".json"
+        filename_dict = OemOp.get_google_oem_dump_dict_async(repo.working_tree_dir)
+        Json.write_dict_to_file(filename_dict, f"{repo.working_tree_dir}{os.sep}{filename}")
+
         if repo.due_changes():
             OemOp.write_all_files(repo.working_tree_dir)
-            filename = oem + ".json"
-            filename_dict = OemOp.get_google_oem_dump_dict_async(repo.working_tree_dir)
-            Json.write_dict_to_file(filename_dict, f"{repo.working_tree_dir}{os.sep}{filename}")
             repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
         else:
             print("No changes to push")
