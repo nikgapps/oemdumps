@@ -106,6 +106,7 @@ if F.dir_exists(source_directory):
 
         filename = oem + ".json"
         filename_dict = OemOp.get_google_oem_dump_dict_async(repo.working_tree_dir)
+        print(f"Writing {filename} to {repo.working_tree_dir}{os.sep}{filename}")
         Json.write_dict_to_file(filename_dict, f"{repo.working_tree_dir}{os.sep}{filename}")
 
         if repo.due_changes():
