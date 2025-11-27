@@ -58,7 +58,7 @@ RUN python3.12 -m venv /venv && \
     pip install --no-cache-dir --upgrade pip && \
     pip install zstandard && \
     pip install fsspec==2025.10.0 && \
-    pip install aiohttp==3.8.0
+    pip install aiohttp
 
 # Set work directory
 WORKDIR /usr/src/workdir
