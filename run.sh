@@ -97,4 +97,12 @@ echo "-----------------------------------------------"
 cd /$primary_repo
 ls
 echo "-----------------------------------------------"
+echo "Cleaning up downloaded file..."
+if [ -f "$FILE" ]; then
+    rm -f "$FILE"
+    echo "Deleted: $FILE"
+else
+    echo "No downloaded file to delete."
+fi
+
 python3 upload_to_gitlab.py --folder $UNZIP_DIR --android_version $ANDROID_VERSION
