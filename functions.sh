@@ -82,7 +82,7 @@ extract_img_7z() {
             7z x "$1.img" -y -o"$1" >/dev/null 2>&1 \
                 || echo "Failed to extract $1.img using 7z."
         fi
-
+        find "$1" -maxdepth 2 | head -n 50
         echo "Extraction of $1.img complete."
         rm -f "$1.img"
     else
