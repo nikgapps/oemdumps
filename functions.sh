@@ -58,20 +58,27 @@ get_base_name() {
 
 extract_dat_br() {
     echo "Extracting $1.new.dat.br and converting to $1.img..."
-    brotli -d $1.new.dat.br -o $1.new.dat
-    python /sdat2img/sdat2img.py $1.transfer.list $1.new.dat $1.img
-    rm -rf $1.new.dat.br $1.new.dat $1.transfer.list
+    brotli -d "$1.new.dat.br" -o "$1.new.dat"
+    python /sdat2img/sdat2img.py "$1.transfer.list" "$1.new.dat" "$1.img"
+    rm -rf "$1.new.dat.br" "$1.new.dat" "$1.transfer.list"
     echo "Extraction of $1.new.dat.br complete."
-    extract_img_7z $1
+    extract_img_7z "$1"
 }
 
 extract_img_7z() {
-    if [ -f $1.img ]; then
+    if [ -f "$1.img" ]; then
         FILE_TYPE=$(file "$1.img")
         echo "Extracting $1.img with type $FILE_TYPE..."
         mkdir -p "$1"
-        echo "Trying to extract $1.img using 7z."
-        7z x "$1.img" -y -o"$1" >/dev/null 2>&1 || echo "Failed to extract $1.img using 7z."
+
+        if echo "$FILE_TYPE" | grep -qi "erofs"; then
+            echo "EROFS detected. Extracting using dump.erofs."
+            dump.erofs -x "$1" "$1.img" || echo "Failed to extract $1.img using dump.erofs."
+        else
+            echo "Trying to extract $1.img using 7z."
+            7z x "$1.img" -y -o"$1" >/dev/null 2>&1 || echo "Failed to extract $1.img using 7z."
+        fi
+
         echo "Extraction of $1.img complete."
         rm -f "$1.img"
     else
