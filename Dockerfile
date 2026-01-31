@@ -42,8 +42,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     curl \
     openjdk-17-jdk \
-    erofs-utils \
-    fuse \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -68,8 +66,13 @@ WORKDIR /usr/src/workdir
 # Copy the rest of the application code into the container
 COPY . .
 
+RUN ./extract.erofs --help || true
+
 # Ensure all .sh scripts have execute permissions
 RUN find . -name "*.sh" -exec chmod +x {} +
+
+# Ensure all *.erofs scripts have execute permissions
+RUN find . -name "*.erofs" -exec chmod +x {} +
 
 # Set the entrypoint
 ENTRYPOINT ["bash", "-c"]

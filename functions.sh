@@ -1,5 +1,7 @@
 # functions.sh
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Fetch environment variables if necessary
 fetch_env_vars() {
     if [ -z "$GITLAB_TOKEN" ]; then
@@ -72,15 +74,13 @@ extract_img_7z() {
         mkdir -p "$1"
 
         if echo "$FILE_TYPE" | grep -qi "erofs"; then
-            echo "EROFS detected. Extracting via erofs-fuse."
-            MNT=$(mktemp -d)
-            erofs-fuse "$1.img" "$MNT" || echo "Failed to mount EROFS image."
-            cp -a "$MNT"/* "$1"/
-            fusermount -u "$MNT"
-            rmdir "$MNT"
+            echo "EROFS detected. Extracting using extract.erofs."
+            "$SCRIPT_DIR/extract.erofs" -i "$1.img" -o "$1" -x \
+                || echo "Failed to extract $1.img using extract.erofs."
         else
             echo "Trying to extract $1.img using 7z."
-            7z x "$1.img" -y -o"$1" >/dev/null 2>&1 || echo "Failed to extract $1.img using 7z."
+            7z x "$1.img" -y -o"$1" >/dev/null 2>&1 \
+                || echo "Failed to extract $1.img using 7z."
         fi
 
         echo "Extraction of $1.img complete."
