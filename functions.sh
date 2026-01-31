@@ -72,8 +72,12 @@ extract_img_7z() {
         mkdir -p "$1"
 
         if echo "$FILE_TYPE" | grep -qi "erofs"; then
-            echo "EROFS detected. Extracting using dump.erofs."
-            dump.erofs -x "$1" "$1.img" || echo "Failed to extract $1.img using dump.erofs."
+            echo "EROFS detected. Extracting via erofs-fuse."
+            MNT=$(mktemp -d)
+            erofs-fuse "$1.img" "$MNT" || echo "Failed to mount EROFS image."
+            cp -a "$MNT"/* "$1"/
+            fusermount -u "$MNT"
+            rmdir "$MNT"
         else
             echo "Trying to extract $1.img using 7z."
             7z x "$1.img" -y -o"$1" >/dev/null 2>&1 || echo "Failed to extract $1.img using 7z."
