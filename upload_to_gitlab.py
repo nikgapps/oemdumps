@@ -12,24 +12,23 @@ from niklibrary.helper.SystemStat import SystemStat
 from niklibrary.json.Json import Json
 from niklibrary.oem.OemOp import OemOp
 
-from helper import get_repo_name
+from helper.FileOp import FileOp
 
-# https://dl.google.com/developers/android/vic/images/ota/cheetah_beta-ota-ap41.240823.009-971ac562.zip
-# https://dl.google.com/developers/android/vic/images/ota/caiman_beta-ota-ap41.240823.009-04e53804.zip
 SystemStat.show_stats()
 parser = argparse.ArgumentParser(description='OTA payload dumper')
 parser.add_argument('--folder', default="", help='folder to read from')
-parser.add_argument('--android_version', default="", help='Android version')
 args = parser.parse_args()
 
 source_directory = str(args.folder)
-android_version = str(args.android_version)
-print(f"Android Version: {android_version}")
+
 print(f"Source Directory: {source_directory}")
-if android_version == "":
-    exit("Android version is required")
-oem, repo_date = get_repo_name(source_directory)
-repo_name = f"{android_version}_{oem}" + (f"_{repo_date}" if repo_date is not None else "")
+android_version, build_date, device_name = None, None, None
+if FileOp.dir_exists(source_directory):
+    android_version, build_date, device_name = FileOp.get_repo_name(source_directory)
+if not android_version or not build_date or not device_name:
+    exit("Android version, Build Date and Device name are required")
+
+repo_name = f"{android_version}_{device_name}" + (f"_{build_date}" if build_date is not None else "")
 print(f"Repo name: {repo_name}")
 load_dotenv()
 if F.dir_exists(source_directory):
@@ -104,7 +103,7 @@ if F.dir_exists(source_directory):
                     if not o.extract_overlay():
                         print("Overlay extraction of " + destination_path + " failed")
 
-        filename = oem + ".json"
+        filename = device_name + ".json"
         filename_dict = OemOp.get_google_oem_dump_dict_async(repo.working_tree_dir)
         print(f"Writing {filename} to {repo.working_tree_dir}{os.sep}{filename}")
         Json.write_dict_to_file(filename_dict, f"{repo.working_tree_dir}{os.sep}{filename}")
