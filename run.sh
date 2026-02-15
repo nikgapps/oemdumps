@@ -13,9 +13,12 @@ primary_repo="oemdumps"
 git clone git@github.com:nikgapps/$primary_repo.git
 cd $primary_repo
 pip3 install -r requirements.txt
+echo "Default URL: $URL"
 FILE=$(get_base_name $URL)
 echo "File name is $FILE"
-
+echo "-----------------------------------------------"
+python3 system_stats.py
+echo "-----------------------------------------------"
 [ -z "$FILE" ] && URL="$(python3 downloadlink.py --download $URL)" && FILE=$(get_base_name $URL)
 EXTENSION=$(echo ${FILE##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
@@ -67,6 +70,7 @@ fi
 
 echo "Extraction complete. Files extracted to $UNZIP_DIR"
 echo "-----------------------------------------------"
+echo "Listing the extracted files"
 cd $UNZIP_DIR
 ls
 echo "-----------------------------------------------"
@@ -80,20 +84,15 @@ for p in $partition_list; do
         echo "$p.new.dat.br or $p.img not found."
     fi
 done
-for p in $partition_list; do
-    echo "Fetching Android version from $p partition..."
-    ANDROID_VERSION=$(fetch_android_version $p)
-    if [ -n "$ANDROID_VERSION" ]; then
-        break
-    fi
-done
+echo "-----------------------------------------------"
+echo "Listing the extracted files"
 ls
 echo "-----------------------------------------------"
 cd ..
+echo "-----------------------------------------------"
+echo "Listing the directory"
+echo "-----------------------------------------------"
 ls
-echo "-----------------------------------------------"
-echo "ANDROID_VERSION: $ANDROID_VERSION"
-echo "-----------------------------------------------"
 cd /$primary_repo
 ls
 echo "-----------------------------------------------"
@@ -105,4 +104,4 @@ else
     echo "No downloaded file to delete."
 fi
 
-python3 upload_to_gitlab.py --folder $UNZIP_DIR --android_version $ANDROID_VERSION
+python3 upload_to_gitlab.py --folder $UNZIP_DIR
