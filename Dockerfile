@@ -66,6 +66,9 @@ WORKDIR /usr/src/workdir
 # Copy the rest of the application code into the container
 COPY . .
 
+RUN apt-get update && apt-get install -y dos2unix
+RUN dos2unix *.sh
+
 RUN ./extract.erofs --help || true
 
 # Ensure all .sh scripts have execute permissions
