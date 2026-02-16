@@ -46,6 +46,7 @@ class FileOp(F):
         }
 
         target_folders = {"product/etc", "system_ext/etc", "system"}
+        candidates = []
 
         for root, _, files in os.walk(source_directory):
             normalized_root = root.replace("\\", "/")
@@ -56,10 +57,15 @@ class FileOp(F):
             for file in files:
                 if not file.endswith("build.prop"):
                     continue
+                candidates.append((normalized_root, os.path.join(root, file)))
 
-                path = os.path.join(root, file)
+        for folder in target_folders:
+            for normalized_root, path in candidates:
+                if not normalized_root.endswith(folder):
+                    continue
 
                 with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                    print(f"Reading {path} for repo info...")
                     for line in f:
                         if "=" not in line:
                             continue
@@ -82,8 +88,9 @@ class FileOp(F):
                         # fingerprint
                         elif key in fingerprint_keys:
                             fingerprint = value
-
                         if android_version and build_date and device_name and brand and fingerprint:
+                            print(
+                                f"android_version={android_version}, build_date={build_date}, device_name={device_name}, brand={brand}, fingerprint={fingerprint}")
                             return android_version, build_date, device_name, brand, fingerprint
 
         return android_version, build_date, device_name, brand, fingerprint
