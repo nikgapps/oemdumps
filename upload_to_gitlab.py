@@ -13,10 +13,13 @@ from niklibrary.json.Json import Json
 from niklibrary.oem.OemOp import OemOp
 
 from helper.FileOp import FileOp
+from extraction_tracker import ExtractionTracker
 
 SystemStat.show_stats()
 parser = argparse.ArgumentParser(description='OTA payload dumper')
 parser.add_argument('--folder', default="", help='folder to read from')
+parser.add_argument('--source-filename', help='original OTA ZIP filename to record in tracker')
+parser.add_argument('--source-url', default="", help='resolved OTA URL')
 # parser.add_argument('--skip', nargs='*', default=['system', 'product'])
 parser.add_argument('--skip', nargs='*', default=[])
 args = parser.parse_args()
@@ -70,6 +73,7 @@ if F.dir_exists(source_directory):
     repo_dir = working_dir + os.sep + repo_name
     repo = GitOp.setup_repo(repo_dir=repo_dir,
                                     repo_url=project.ssh_url_to_repo)
+    published_partitions = []
     for partition in partitions:
         if partition in skip_partitions:
             print(f"Skipping {partition} partition as it is in skip list")
@@ -123,6 +127,17 @@ if F.dir_exists(source_directory):
 
         if repo.due_changes():
             OemOp.write_all_files(repo.working_tree_dir)
-            repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True)
+            if not repo.git_push(f"Pushing {partition} files", push_untracked_files=True, debug=True, pull_first=True):
+                raise RuntimeError(f"Failed to publish {partition}; extraction will not be marked complete")
         else:
             print("No changes to push")
+        published_partitions.append(partition)
+
+    if args.source_filename:
+        if not published_partitions:
+            raise RuntimeError("No partitions published; extraction will not be marked complete")
+        ExtractionTracker(gitlab_token).mark(
+            args.source_filename, args.source_url, repo_name,
+            android_version, device_name, fingerprint, published_partitions,
+        )
+        print(f"Recorded completed extraction for {args.source_filename} in nikgapps/tracker")

@@ -20,6 +20,16 @@ echo "-----------------------------------------------"
 python3 system_stats.py
 echo "-----------------------------------------------"
 [ -z "$FILE" ] && URL="$(python3 downloadlink.py --download $URL)" && FILE=$(get_base_name $URL)
+SOURCE_FILENAME="$FILE"
+if python3 extraction_tracker.py check --filename "$SOURCE_FILENAME"; then
+    echo "Skipping completed extraction."
+    exit 0
+else
+    tracker_status=$?
+    if [ "$tracker_status" -ne 1 ]; then
+        exit "$tracker_status"
+    fi
+fi
 EXTENSION=$(echo ${FILE##*.} | inline-detox)
 UNZIP_DIR=${FILE/.$EXTENSION/}
 
@@ -104,4 +114,4 @@ else
     echo "No downloaded file to delete."
 fi
 
-python3 upload_to_gitlab.py --folder $UNZIP_DIR
+python3 upload_to_gitlab.py --folder "$UNZIP_DIR" --source-filename "$SOURCE_FILENAME" --source-url "$URL"

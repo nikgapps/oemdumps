@@ -2,7 +2,7 @@ import argparse
 
 from niklibrary.oem.OemOp import OemOp
 
-device_name = "mustang"
+device_name = "kodiak"
 
 google_devices = OemOp.get_google_devices()
 
