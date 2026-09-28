@@ -19,6 +19,7 @@ class FileOp(F):
             "ro.product.build.version.release",
             "ro.build.version.release",
             "ro.system.build.version.release",
+            "ro.system_ext.build.version.release",
         }
 
         build_date_keys = {
@@ -45,7 +46,9 @@ class FileOp(F):
             "ro.system.build.fingerprint"
         }
 
-        target_folders = {"product/etc", "system_ext/etc", "system"}
+        # A set makes precedence arbitrary. Product carries the device-specific
+        # identity; system may identify Google's generic system image instead.
+        target_folders = ("product/etc", "system_ext/etc", "system")
         candidates = []
 
         for root, _, files in os.walk(source_directory):
@@ -72,21 +75,21 @@ class FileOp(F):
 
                         key, value = line.strip().split("=", 1)
                         # android version
-                        if key in android_version_keys:
+                        if key in android_version_keys and not android_version:
                             android_version = value
                         # build date
-                        elif key in build_date_keys:
+                        elif key in build_date_keys and not build_date:
                             build_date = datetime.fromtimestamp(
                                 float(value), tz=timezone.utc
                             ).strftime("%Y%m%d")
                         # device name
-                        elif key in device_name_keys:
+                        elif key in device_name_keys and not device_name:
                             device_name = value
                         # brand
-                        elif key in brand_keys:
+                        elif key in brand_keys and not brand:
                             brand = value
                         # fingerprint
-                        elif key in fingerprint_keys:
+                        elif key in fingerprint_keys and not fingerprint:
                             fingerprint = value
                         if android_version and build_date and device_name and brand and fingerprint:
                             print(
